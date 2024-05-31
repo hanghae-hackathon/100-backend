@@ -1,14 +1,25 @@
-import sys
 import json
+import sys
 
-def process_data(data):
-    # JSON 문자열을 딕셔너리로 변환
-    data_dict = json.loads(data)
-    # AI 모델 처리 로직 (여기서는 간단히 출력)
-    print("Processing data for dog:", data_dict)
+def main(data):
+    try:
+        print(f"Raw input data: {data}")
+        if not data:
+            raise ValueError("Input data is empty")
+        data_dict = json.loads(data)
+        # 데이터 처리 로직 추가
+        return data_dict
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"Error processing input data: {e}", file=sys.stderr)
+        return None
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python model.py '<json_data>'")
+    input_data = sys.stdin.read()
+    if not input_data:
+        print("No input data provided")
     else:
-        process_data(sys.argv[1])
+        result = main(input_data)
+        if result:
+            print("Data processed successfully:", result)
+        else:
+            print("Failed to process data")

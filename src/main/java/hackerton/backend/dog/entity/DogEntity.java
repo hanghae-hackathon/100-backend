@@ -15,6 +15,7 @@ public class DogEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String video; // url타입
     private String image; // url타입
     private String type; // 종
