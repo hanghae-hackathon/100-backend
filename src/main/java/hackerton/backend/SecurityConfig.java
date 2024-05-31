@@ -15,10 +15,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf.disable()) // 새로운 방식으로 CSRF 비활성화
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                        .requestMatchers("/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers("/dogs/admin/dog").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .formLogin(withDefaults());
         return http.build();

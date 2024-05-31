@@ -41,7 +41,7 @@ public class DogController {
 
     @PostMapping("/search")
     public Map<String, Integer> searchDogs(@RequestBody DogEntity dog) {
-        // AI 모델 호출하여 검색 작업 수행 (유사한 형태로 Python 스크립트 호출)
+        // AI 모델 호출하여 검색 작업 수행 (Python 스크립트 호출해야함)
         int requestId = 1; // 요청 ID 생성 로직
         return Collections.singletonMap("requestId", requestId);
     }

@@ -19,7 +19,6 @@ public class DogResponseDto {
     private boolean isNeutrification;
     private int walkingTime;
     private String hairLength;
-    private boolean isIndependent;
     private int childcareDifficulty;
     private String location;
     private String phone;

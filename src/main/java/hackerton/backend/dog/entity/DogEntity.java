@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 @Getter
 @Entity
 @NoArgsConstructor
@@ -23,9 +22,10 @@ public class DogEntity {
     private int age;
     private int weight;
     private String sex;
-    private boolean isNeutrification; // 중성화
+    @Column(nullable = true)
+    private boolean neutrification; // 중성화
     private int walkingTime; // 산책 시간, 최대 30분
     private String hairLength; // 털길이, long, middle, short
-    private boolean isIndependent; // 독립적인 성격
+    private boolean isIndependent = false; // 기본 값 설정
     private int childcareDifficulty; // 육아 난이도 0 5 10
 }
