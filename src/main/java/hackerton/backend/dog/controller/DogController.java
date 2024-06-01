@@ -1,13 +1,18 @@
 package hackerton.backend.dog.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hackerton.backend.dog.entity.DogEntity;
 import hackerton.backend.dog.service.DogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -19,44 +24,47 @@ public class DogController {
     @Autowired
     private DogService dogService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     @GetMapping("/healthCheck")
     public String healthCheck() {
         return "hello world";
     }
 
     @PostMapping("/admin/dog")
-    public String addDog(@RequestBody DogEntity dog) {
+    public ResponseEntity<Resource> addDog(@RequestBody DogEntity dog) {
         dogService.saveDog(dog);
 
-        // Python script 호출
+        String videoUrl = dog.getVideo();
+        String videoFilePath = getVideoFile(videoUrl);
+        Path path = Paths.get(videoFilePath);
+        Resource resource;
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder("python3", "model.py");
-            Process process = processBuilder.start();
-
-            // DogEntity를 JSON 문자열로 변환
-            String jsonData = objectMapper.writeValueAsString(dog);
-
-            // Python 스크립트로 JSON 데이터 전달
-            try (OutputStream os = process.getOutputStream()) {
-                os.write(jsonData.getBytes(StandardCharsets.UTF_8));
-                os.flush();
+            resource = new UrlResource(path.toUri());
+            if (!resource.exists() || !resource.isReadable()) {
+                throw new RuntimeException("Could not read file: " + videoFilePath);
             }
-
-            // Python 스크립트의 결과를 읽기
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-            int exitCode = process.waitFor();
-            System.out.println("\nExited with error code : " + exitCode);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read file: " + videoFilePath, e);
         }
-        return "success";
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("video/mp4"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    private String getVideoFile(String videoUrl) {
+        if (videoUrl.endsWith("/video1")) {
+            return "path/to/local/video1.mp4";
+        } else if (videoUrl.endsWith("/video2")) {
+            return "path/to/local/video2.mp4";
+        } else if (videoUrl.endsWith("/video3")) {
+            return "path/to/local/video3.mp4";
+        } else if (videoUrl.endsWith("/video4")) {
+            return "path/to/local/video4.mp4";
+        } else if (videoUrl.endsWith("/video5")) {
+            return "path/to/local/video5.mp4";
+        }
+        return "default_video_path";
     }
 
     @PostMapping("/search")
