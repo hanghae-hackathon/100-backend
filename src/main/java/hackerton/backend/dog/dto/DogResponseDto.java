@@ -24,4 +24,5 @@ public class DogResponseDto {
     private String phone;
     private List<String> behavior;
     private List<String> character;
+    private String description;
 }

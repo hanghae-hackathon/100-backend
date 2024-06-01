@@ -2,6 +2,7 @@ package hackerton.backend.dog.controller;
 
 import hackerton.backend.dog.entity.DogEntity;
 import hackerton.backend.dog.service.DogService;
+import hackerton.backend.dog.service.PythonServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -24,32 +25,27 @@ public class DogController {
     @Autowired
     private DogService dogService;
 
+    @Autowired
+    private PythonServiceClient pythonServiceClient;
+
     @GetMapping("/healthCheck")
     public String healthCheck() {
         return "hello world";
     }
 
+    //등록하고 비디오를 python input
     @PostMapping("/admin/dog")
-    public ResponseEntity<Resource> addDog(@RequestBody DogEntity dog) {
-        dogService.saveDog(dog);
+    public ResponseEntity<DogEntity> addDog(@RequestBody DogEntity dog) {
+        // Python 서비스 호출하여 description 가져오기
+        String description = pythonServiceClient.getDescriptionFromVideo(dog.getVideo());
 
-        String videoUrl = dog.getVideo();
-        String videoFilePath = getVideoFile(videoUrl);
-        Path path = Paths.get(videoFilePath);
-        Resource resource;
-        try {
-            resource = new UrlResource(path.toUri());
-            if (!resource.exists() || !resource.isReadable()) {
-                throw new RuntimeException("Could not read file: " + videoFilePath);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Could not read file: " + videoFilePath, e);
-        }
+        // description 설정
+        dog.setDescription(description);
 
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("video/mp4"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                .body(resource);
+        // DogEntity 저장
+        DogEntity savedDog = dogService.saveDog(dog);
+
+        return ResponseEntity.ok(savedDog);
     }
 
     private String getVideoFile(String videoUrl) {

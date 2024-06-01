@@ -1,32 +1,17 @@
-import json
+
+# 파이썬으로 input을 비디오 url을 보내면 return값으로 description (String을 받아)
 import sys
 
-def main(data, video_file):
-    try:
-        print(f"Raw input data: {data}")
-        print(f"Video file to process: {video_file}")
-        if not data:
-            raise ValueError("Input data is empty")
-        data_dict = json.loads(data)
-        # 비디오 파일 처리 로직 추가
-        return data_dict
-    except (json.JSONDecodeError, ValueError) as e:
-        print(f"Error processing input data: {e}", file=sys.stderr)
-        return None
+def get_description(video_url):
+    # Sring
+    return "이것은 비디오입니다."
 
 if __name__ == "__main__":
-    input_data = sys.stdin.read()
-    if len(sys.argv) < 2:
-        print("No video file provided")
-        sys.exit(1)
+    # 표준 입력으로 URL
+    video_url = sys.stdin.read().strip()
 
-    video_file = sys.argv[1]
+    # 비디오 URL에 대한 설명
+    description = get_description(video_url)
 
-    if not input_data:
-        print("No input data provided")
-    else:
-        result = main(input_data, video_file)
-        if result:
-            print("Data processed successfully:", result)
-        else:
-            print("Failed to process data")
+    # 결과를 단순 String 형태
+    print(description)

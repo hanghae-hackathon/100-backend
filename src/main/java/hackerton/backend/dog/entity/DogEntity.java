@@ -24,9 +24,14 @@ public class DogEntity {
     private int weight;
     private String sex;
     @Column(nullable = true)
-    private boolean neutrification; // 중성화
+    private boolean isNeutrification; // 중성화
     private int walkingTime; // 산책 시간, 최대 30분
     private String hairLength; // 털길이, long, middle, short
     private boolean isIndependent = false; // 기본 값 설정
     private int childcareDifficulty; // 육아 난이도 0 5 10
+    private String description;
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 }
