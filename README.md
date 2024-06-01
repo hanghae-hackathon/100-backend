@@ -10,3 +10,7 @@ Hackerton Backend는 강아지 정보를 저장하고 검색하는 기능을 제
 - Development Tools: IntelliJ IDEA, Gradle
 - Deployment: ngrok
 - Database Management: MySQL Workbench
+
+### API
+<img width="800" alt="image" src="https://github.com/hanghae-hackathon/100-backend/assets/85047035/3d356c72-64bd-4675-8587-01b356de890b">
+
